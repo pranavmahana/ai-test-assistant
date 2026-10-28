@@ -1,0 +1,80 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Identity & Authentication Microservice",
+    "version": "1.0.0",
+    "description": "User registration, login, token refresh, and profile endpoints."
+  },
+  "servers": [
+    {
+      "url": "https://auth.company.com/v1"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register new account",
+        "operationId": "registerUser",
+        "tags": ["auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {"type": "string", "format": "email"},
+                  "password": {"type": "string", "minLength": 8}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "User registered"},
+          "400": {"description": "Validation error"},
+          "409": {"description": "User already exists"}
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Authenticate with credentials",
+        "operationId": "loginUser",
+        "tags": ["auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {"type": "string"},
+                  "password": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Login successful, JWT token returned"},
+          "401": {"description": "Invalid credentials"}
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "summary": "Get authenticated user profile",
+        "operationId": "getCurrentUser",
+        "tags": ["auth"],
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {"description": "User profile retrieved"},
+          "401": {"description": "Missing or expired token"}
+        }
+      }
+    }
+  }
+}
